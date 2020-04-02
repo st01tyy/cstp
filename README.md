@@ -1,2 +1,2 @@
-# cstp
-A SpringBoot Develop Experiment
+# Campus Second-hand Trading Platform
+## A SpringBoot Develop Experiment
