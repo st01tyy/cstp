@@ -7,6 +7,8 @@ A SpringBoot Develop Experiment
 
 ## Tools, Dependencies and Frameworks
 * SpringBoot
+* Vue.js
+* axios
 * Maven
 * MySQL
 * JPA
