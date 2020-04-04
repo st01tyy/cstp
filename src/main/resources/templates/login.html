@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<script src="../static/vue.js"></script>
+<script src="../static/axios.js"></script>
+<script th:src="@{/vue.js}"></script>
+<script th:src="@{/axios.js}"></script>
+<style>
+    p{
+        color: red;
+        font-size: 10pt;
+        text-align: center;
+    }
+
+    .input{
+        text-align: center;
+        margin-top:10px;
+    }
+</style>
+<body>
+<div id="app" class="app">
+    <h2 style="text-align: center;">登录</h2>
+    <div class="input"><input class="input" type="text" placeholder="用户名" v-model="username" maxlength="10"></div>
+    <p v-show="username.length == 0">用户名不能为空</p>
+    <div class="input"><input class="input" type="password" placeholder="密码" v-model="pw" maxlength="16"></div>
+    <p v-show="pw.length == 0 || lastAttemptFailed">{{getPwAlert}}</p>
+    <div class="input"><input type="submit" v-show="username.length > 0 && pw.length > 0"value="登录" @click="login()"></div>
+    <div class="input"><a class="input" href="/">返回主页</a></div>
+</div>
+</body>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            username: '',
+            pw: '',
+            lastAttemptFailed: false,
+            pwAlert: '密码不能为空'
+        },
+        computed:{
+            getPwAlert: function(){
+                if(this.pw.length == 0) {
+                    this.lastAttemptFailed = false
+                    return '密码不能为空'
+                }
+                else if(this.pw.length > 0 && this.lastAttemptFailed){
+                    return '用户名和密码不匹配'
+                }
+            }
+        },
+        mounted: function(){
+              this.checkIdentity()
+        },
+        methods:{
+            checkIdentity: function(){
+                let that = this
+                axios.get('/data/identity').then(function(response){
+                    if(response.data.length > 0){
+                        /*用户已登录*/
+                        window.location.href = "/"
+                    }
+                }).catch(function(response){
+                    console.log(response)
+                })
+            },
+            login: function(){
+                let that = this
+                axios.post('/data/login', {
+                    username: that.username,
+                    pw: that.pw
+                }).then(function(response){
+                    if(response.data){
+                        /*登录成功*/
+                        window.location.href = "/"
+                    }
+                    else{
+                        /*登录失败*/
+                        that.lastAttemptFailed = true
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            }
+        }
+    })
+</script>
+</html>

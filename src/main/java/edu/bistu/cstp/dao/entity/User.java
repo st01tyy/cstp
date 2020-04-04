@@ -1,6 +1,7 @@
 package edu.bistu.cstp.dao.entity;
 
 import lombok.Data;
+import org.springframework.util.DigestUtils;
 
 import javax.persistence.*;
 
