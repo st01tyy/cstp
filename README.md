@@ -15,7 +15,7 @@ A SpringBoot Develop Experiment
 * lambok
 
 ## Update Log April 10th
-* Because of the difficulty and inconvenience of developing **page jump with parameters** with <form>.
+* Because of the difficulty and inconvenience of developing **page jump with parameters** with '<form>'.
 * I have decided to seperate the vue front end from the current SpringBoot project and create a new repository for the vue-cli project.
 * However, the core of this project is still SpringBoot.
 
