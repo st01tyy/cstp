@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>校园二手交易平台</title>
+</head>
+<script src="../static/vue.js"></script>
+<script src="../static/axios.js"></script>
+<script th:src="@{/vue.js}"></script>
+<script th:src="@{/axios.js}"></script>
+<style>
+    .root{
+        padding-right: 50px;
+        padding-left: 50px;
+    }
+    .title{
+        text-align: center;
+    }
+    .services{
+        text-align: center;
+    }
+    .service{
+        margin-left: 7px;
+        margin-right: 7px;
+        font-size: 13pt;
+        border-radius: 5px;
+    }
+</style>
+<body>
+<div id="app" class="root">
+    <div class="title">
+        <h1>用户中心</h1>
+        <p style="font-size: 13pt">{{username}}</p>
+    </div>
+    <div class="services">
+        <button class="service">账户设置</button>
+        <button class="service">我的订单</button>
+        <button class="service" @click="onMyGoodsClicked">我的商品</button>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            username: ''
+        },
+        mounted: function(){
+            this.verifyIdentity()
+        },
+        methods:{
+            verifyIdentity: function(){
+                /*验证用户的登录信息*/
+                let that = this
+                axios.get('/data/identity').then(function(response){
+                    let res = response.data
+                    if(res.length == 0){
+                        /*用户未登录*/
+                        window.location.href = '/'  //返回主页
+                    }else{
+                        /*用户已登录*/
+                        that.username = res
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            },
+            onMyGoodsClicked: function(){
+                window.location.href="/page/goods"
+            }
+        }
+    })
+</script>
+</html>

@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService
     private User onDuplicateError()
     {
         User user = new User();
-        user.setId(0);
+        user.setUid(0);
         return user;
     }
 

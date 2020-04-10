@@ -34,6 +34,18 @@ public class PageController
         return "home_page";
     }
 
+    @RequestMapping("/page/user_center")
+    public String userCenter()
+    {
+        return "user_center";
+    }
+
+    @RequestMapping("/page/goods")
+    public String goods()
+    {
+        return "goods";
+    }
+
     @RequestMapping("/")
     public String defaultPage()
     {

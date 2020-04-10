@@ -33,7 +33,7 @@ public class UserController
             /*发生意外*/
             return RegisterResult.ERROR;
         }
-        else if(result.getId() == 0)
+        else if(result.getUid() == 0)
         {
             /*用户名重复*/
             return RegisterResult.DUPLICATE;
@@ -69,7 +69,7 @@ public class UserController
     {
         System.out.println("method login triggered: " + loginRequest.getUsername() + " " + loginRequest.getPw());
         User res = userService.isLoginInfoValid(loginRequest.getUsername(), loginRequest.getPw());
-        if(res != null && res.getId() > 0)
+        if(res != null && res.getUid() > 0)
         {
             httpSession.setAttribute("id", res.getUsername());
             return true;

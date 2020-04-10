@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>我的商品</title>
+</head>
+<script src="../static/vue.js"></script>
+<script src="../static/axios.js"></script>
+<script th:src="@{/vue.js}"></script>
+<script th:src="@{/axios.js}"></script>
+<style>
+    .root{
+        padding-right: 100px;
+        padding-left: 100px;
+    }
+</style>
+<body>
+<div id="app" class="root">
+    <h1 style="text-align: center">我的商品</h1>
+    <div style="text-align: right">
+        <a>返回主页</a>
+    </div>
+    {{goodsInfoArr}}
+    <div class="available">
+        <h2>未售罄商品</h2>
+        <form action="/page/goods_edit" method="post">
+            <input type="submit" v-model="goodsInfoArr[0].title" name="title">
+            <input type="input" v-model="goodsInfoArr[0].detail" name="detail">
+            <input type="number" v-model="goodsInfoArr[0].price" name="price" readonly="readonly">
+            <input type="number" v-model="goodsInfoArr[0].amount" name="amount" readonly="readonly">
+        </form>
+
+        <table rules="all" frame="box" cellpadding="15">
+            <tr align="center">
+                <form action="/page/goods_edit" method="post">
+                    <td><input type="submit" v-model="goodsInfoArr[0].title" name="title"></td>
+                    <td><input type="input" v-model="goodsInfoArr[0].detail" name="detail"></td>
+                    <td><input type="number" v-model="goodsInfoArr[0].price" readonly="readonly" name="price"></td>
+                    <td><input type="number" v-model="goodsInfoArr[0].amount" readonly="readonly" name="amount"></td>
+                </form>
+            </tr>
+        </table>
+
+        <table rules="all" frame="box" cellpadding="15">
+           <tr align="center">
+               <th>序号</th>
+               <th>商品名</th>
+               <th>单价</th>
+               <th>剩余数量</th>
+           </tr>
+            <tr v-for="(goodsInfo, index) in goodsInfoArr" align="center">
+                <form action="/page/goods_edit" method="post">
+                    <td>{{index + 1}}</td>
+                    <td><input type="submit" v-model="goodsInfoArr[index].title" name="title"></td>
+                    <td><input type="input" v-model="goodsInfoArr[index].detail" name="detail"></td>
+                    <td><input type="number" v-model="goodsInfoArr[index].price" readonly="readonly" name="price"></td>
+                    <td><input type="number" v-model="goodsInfoArr[index].amount" readonly="readonly" name="amount"></td>
+                </form>
+            </tr>
+        </table>
+    </div>
+    <div class="sold_out">
+        <h2>已售罄商品</h2>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            goodsInfoArr: [{ "title": "2B铅笔", "detail": "全新未开封2B铅笔", "price": 0.5, "amount": 5 }]
+        },
+        mounted: function(){
+            this.verifyIdentity()
+        },
+        methods:{
+            verifyIdentity: function(){
+                /*验证用户的登录信息*/
+                let that = this
+                axios.get('/data/identity').then(function(response){
+                    let res = response.data
+                    if(res.length == 0){
+                        /*用户未登录*/
+                        window.location.href = '/'  //返回主页
+                    }else{
+                        /*用户已登录*/
+                        that.getGoods()
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            },
+            getGoods: function(){
+                /*获取商品信息*/
+                let that = this
+                axios.get('/data/goods').then(function (response) {
+                    let res = response.data
+                    console.log(res)
+                    if(res == null){
+                        /*发生错误*/
+                    }
+                    else{
+                        that.goodsInfoArr = res
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            },
+            editGoods: function(index){
+                let that = this
+                let goodsInfo = that.goodsInfoArr[index]
+                console.log(goodsInfo)
+                axios.post('/page/goods_edit', {
+                    title: goodsInfo.title,
+                    detail: goodsInfo.detail,
+                    price: goodsInfo.price,
+                    amount: goodsInfo.amount
+                }).then(function (response) {
+
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            }
+        }
+    })
+</script>
+</html>
