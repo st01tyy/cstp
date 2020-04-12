@@ -6,10 +6,7 @@ import edu.bistu.cstp.domain.register.RegisterRequest;
 import edu.bistu.cstp.domain.register.RegisterResult;
 import edu.bistu.cstp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -76,5 +73,16 @@ public class UserController
         }
         else
             return false;
+    }
+
+    @GetMapping("/data/test")
+    public String test(HttpSession httpSession)
+    {
+        if(httpSession.getAttribute("test") != null)
+            System.out.println(httpSession.getAttribute("test"));
+        else
+            System.out.println("null");
+        httpSession.setAttribute("test", 1);
+        return "hello";
     }
 }
