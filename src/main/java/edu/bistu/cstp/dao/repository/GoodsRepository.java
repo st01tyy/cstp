@@ -11,4 +11,6 @@ public interface GoodsRepository extends JpaRepository<Goods, Integer>
     List<Goods> findAllByOwner(User user);  //查询用户发布的所有商品
 
     List<Goods> findAllByDetailIsLike(String str);  //根据用户输入的关键字查询相关商品
+
+    Goods findByGid(Integer gid);
 }

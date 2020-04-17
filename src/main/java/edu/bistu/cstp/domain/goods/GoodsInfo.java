@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GoodsInfo
 {
+    private Integer gid;
+
     private String title;
 
     private String detail;
@@ -16,4 +18,7 @@ public class GoodsInfo
     private Float price;
 
     private Integer amount;
+
+    public final static GoodsInfo successMsg = new GoodsInfo(0, null, null, null, null);
+    public final static GoodsInfo failMsg = new GoodsInfo(null, null, null, null, null);
 }

@@ -4,7 +4,6 @@ import edu.bistu.cstp.domain.goods.GoodsInfo;
 import edu.bistu.cstp.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -29,16 +28,33 @@ public class GoodsController
         return res;
     }
 
-    @PostMapping("/page/goods_edit")
-    public ModelAndView jumpToGoodsEdit(@RequestParam String title, @RequestParam String detail, @RequestParam Float price, @RequestParam Integer amount)
+    @PostMapping("/data/new_goods")
+    public GoodsInfo addNewGoods(@RequestBody GoodsInfo goodsInfo, HttpSession httpSession)
     {
-        GoodsInfo goodsInfo = new GoodsInfo(title, detail, price, amount);
-        if(goodsInfo != null)
-            System.out.println(goodsInfo.toString());
+        String username = (String) httpSession.getAttribute("id");
+        if(username == null)
+        {
+            return GoodsInfo.failMsg;
+        }
+        else
+        {
+            GoodsInfo res = goodsService.addNewGoods(goodsInfo, username);
+            return res;
+        }
+    }
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("goods_edit");
-        modelAndView.addObject("goodsInfo", goodsInfo);
-        return modelAndView;
+    @PostMapping("/data/edit_goods")
+    public GoodsInfo editGoods(@RequestBody GoodsInfo goodsInfo, HttpSession httpSession)
+    {
+        String username = (String) httpSession.getAttribute("id");
+        if(username == null)
+        {
+            return GoodsInfo.failMsg;
+        }
+        else
+        {
+            GoodsInfo res = goodsService.editGoods(goodsInfo);
+            return res;
+        }
     }
 }

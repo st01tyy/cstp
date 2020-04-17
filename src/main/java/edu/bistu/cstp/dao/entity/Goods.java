@@ -4,7 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Check;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,5 +32,5 @@ public class Goods
     private User owner;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    private List<Order> orders;
 }

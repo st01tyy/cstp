@@ -3,7 +3,7 @@ package edu.bistu.cstp.dao.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -20,8 +20,8 @@ public class User
     private String pw;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Goods> goodsSet;
+    private List<Goods> goodsSet;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    private List<Goods> orders;
 }

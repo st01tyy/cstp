@@ -28,15 +28,61 @@ public class GoodsServiceImpl implements GoodsService
     @Override
     public GoodsInfo[] getGoodsByOwner(String ownerName)
     {
-        User owner = userRepository.findUserByUsername(ownerName);
-        List<Goods> goodsList = goodsRepository.findAllByOwner(owner);
-        GoodsInfo[] goodsInfoArr = new GoodsInfo[goodsList.size()];
-        int i = 0;
-        for(Goods goods: goodsList)
+        try
         {
-            goodsInfoArr[i] = new GoodsInfo();
-            BeanUtils.copyProperties(goods, goodsInfoArr[i]);
+            User owner = userRepository.findUserByUsername(ownerName);
+            List<Goods> goodsList = goodsRepository.findAllByOwner(owner);
+            GoodsInfo[] goodsInfoArr = new GoodsInfo[goodsList.size()];
+            int i = 0;
+            for(Goods goods: goodsList)
+            {
+                goodsInfoArr[i] = new GoodsInfo();
+                BeanUtils.copyProperties(goods, goodsInfoArr[i]);
+                i++;
+            }
+            return goodsInfoArr;
         }
-        return goodsInfoArr;
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public GoodsInfo addNewGoods(GoodsInfo goodsInfo, String username)
+    {
+        try
+        {
+            User user = userRepository.findUserByUsername(username);
+            Goods goods = new Goods();
+            BeanUtils.copyProperties(goodsInfo, goods);
+            goods.setOwner(user);
+            user.getGoodsSet().add(goods);
+            goodsRepository.save(goods);
+            return GoodsInfo.successMsg;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return GoodsInfo.failMsg;
+        }
+    }
+
+    @Override
+    public GoodsInfo editGoods(GoodsInfo goodsInfo)
+    {
+        try
+        {
+            Goods goods = goodsRepository.findByGid(goodsInfo.getGid());
+            BeanUtils.copyProperties(goodsInfo, goods);
+            goodsRepository.save(goods);
+            return GoodsInfo.successMsg;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return GoodsInfo.failMsg;
+        }
     }
 }
