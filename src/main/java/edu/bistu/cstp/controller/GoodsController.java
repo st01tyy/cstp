@@ -18,6 +18,18 @@ public class GoodsController
         this.goodsService = goodsService;
     }
 
+    @GetMapping("/data/all_goods")
+    public GoodsInfo[] getAllGoods()
+    {
+        return goodsService.getAllGoods();
+    }
+
+    @GetMapping("/data/search_goods")
+    public GoodsInfo[] searchGoods(String keywords)
+    {
+        return goodsService.searchGoods(keywords);
+    }
+
     @GetMapping("/data/goods")
     public GoodsInfo[] getGoods(HttpSession httpSession)
     {
@@ -26,6 +38,12 @@ public class GoodsController
             return null;
         GoodsInfo[] res = goodsService.getGoodsByOwner(ownerName);
         return res;
+    }
+
+    @GetMapping("/data/get_goods")
+    public GoodsInfo getGoodsByGid(@RequestParam Integer gid)
+    {
+        return goodsService.getGoodsByGid(gid);
     }
 
     @PostMapping("/data/new_goods")

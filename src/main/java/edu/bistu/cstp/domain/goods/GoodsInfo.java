@@ -19,6 +19,8 @@ public class GoodsInfo
 
     private Integer amount;
 
-    public final static GoodsInfo successMsg = new GoodsInfo(0, null, null, null, null);
-    public final static GoodsInfo failMsg = new GoodsInfo(null, null, null, null, null);
+    private String owner;
+
+    public final static GoodsInfo successMsg = new GoodsInfo(0, null, null, null, null, null);
+    public final static GoodsInfo failMsg = new GoodsInfo(null, null, null, null, null, null);
 }

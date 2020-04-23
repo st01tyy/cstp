@@ -26,21 +26,12 @@ public class GoodsServiceImpl implements GoodsService
     }
 
     @Override
-    public GoodsInfo[] getGoodsByOwner(String ownerName)
+    public GoodsInfo[] getAllGoods()
     {
         try
         {
-            User owner = userRepository.findUserByUsername(ownerName);
-            List<Goods> goodsList = goodsRepository.findAllByOwner(owner);
-            GoodsInfo[] goodsInfoArr = new GoodsInfo[goodsList.size()];
-            int i = 0;
-            for(Goods goods: goodsList)
-            {
-                goodsInfoArr[i] = new GoodsInfo();
-                BeanUtils.copyProperties(goods, goodsInfoArr[i]);
-                i++;
-            }
-            return goodsInfoArr;
+            List<Goods> goodsList = goodsRepository.findAll();
+            return getGoodsInfoArr(goodsList);
         }
         catch (Exception e)
         {
@@ -48,6 +39,55 @@ public class GoodsServiceImpl implements GoodsService
             return null;
         }
     }
+
+    @Override
+    public GoodsInfo[] searchGoods(String description)
+    {
+        try
+        {
+            List<Goods> goodsList = goodsRepository.findAllByTitleIsLike(description);
+            return getGoodsInfoArr(goodsList);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public GoodsInfo[] getGoodsByOwner(String ownerName)
+    {
+        try
+        {
+            User owner = userRepository.findUserByUsername(ownerName);
+            List<Goods> goodsList = goodsRepository.findAllByOwner(owner);
+            return getGoodsInfoArr(goodsList);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public GoodsInfo getGoodsByGid(int gid)
+    {
+        try
+        {
+            Goods goods = goodsRepository.findByGid(gid);
+            GoodsInfo goodsInfo = new GoodsInfo();
+            BeanUtils.copyProperties(goods, goodsInfo);
+            goodsInfo.setOwner(goods.getOwner().getUsername());
+            return goodsInfo;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
 
     @Override
     public GoodsInfo addNewGoods(GoodsInfo goodsInfo, String username)
@@ -84,5 +124,18 @@ public class GoodsServiceImpl implements GoodsService
             e.printStackTrace();
             return GoodsInfo.failMsg;
         }
+    }
+
+    private GoodsInfo[] getGoodsInfoArr(List<Goods> goodsList)
+    {
+        GoodsInfo[] goodsInfoArr = new GoodsInfo[goodsList.size()];
+        for(int i = 0; i < goodsList.size(); i++)
+        {
+            goodsInfoArr[i] = new GoodsInfo();
+            BeanUtils.copyProperties(goodsList.get(i), goodsInfoArr[i]);
+            goodsInfoArr[i].setOwner(goodsList.get(i).getOwner().getUsername());
+            goodsInfoArr[i].setDetail(null);
+        }
+        return goodsInfoArr;
     }
 }
