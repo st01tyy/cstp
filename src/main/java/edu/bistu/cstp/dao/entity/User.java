@@ -23,5 +23,5 @@ public class User
     private List<Goods> goodsSet;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Goods> orders;
+    private List<Order> orders;
 }

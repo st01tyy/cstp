@@ -3,12 +3,14 @@ package edu.bistu.cstp.dao.entity;
 import lombok.Data;
 import org.hibernate.annotations.Check;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "dingdan")   /*order为mysql关键字*/
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Order
 {
     @Id
