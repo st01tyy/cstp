@@ -7,6 +7,7 @@ import edu.bistu.cstp.dao.entity.User;
 import edu.bistu.cstp.dao.repository.GoodsRepository;
 import edu.bistu.cstp.dao.repository.OrderRepository;
 import edu.bistu.cstp.dao.repository.UserRepository;
+import edu.bistu.cstp.domain.goods.GoodsInfo;
 import edu.bistu.cstp.domain.order.OrderCreateRequest;
 import edu.bistu.cstp.domain.order.OrderInfo;
 import edu.bistu.cstp.service.OrderService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -114,27 +116,69 @@ public class OrderServiceImpl implements OrderService
     }
 
     @Override
-    public OrderInfo buyerPay(OrderInfo orderInfo) {
-        return null;
+    public OrderInfo buyerPay(OrderInfo orderInfo, String buyer)
+    {
+        if(!orderInfo.getBuyer().equals(buyer))
+            return OrderInfo.ERROR;
+        try
+        {
+            Order order = orderRepository.findByOid(orderInfo.getOid());
+            order.setOrderStatus(OrderStatus.SENDING);
+            orderRepository.save(order);
+            return OrderInfo.SUCCEED;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return OrderInfo.ERROR;
+        }
     }
 
     @Override
-    public OrderInfo ownerSend(OrderInfo orderInfo) {
-        return null;
+    public OrderInfo ownerSend(OrderInfo orderInfo, String owner)
+    {
+        if(!orderInfo.getOwner().equals(owner))
+            return OrderInfo.ERROR;
+        try
+        {
+            Order order = orderRepository.findByOid(orderInfo.getOid());
+            order.setOrderStatus(OrderStatus.RECEIVING);
+            orderRepository.save(order);
+            return OrderInfo.SUCCEED;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return OrderInfo.ERROR;
+        }
     }
 
     @Override
-    public OrderInfo buyerReceive(OrderInfo orderInfo) {
-        return null;
+    public OrderInfo buyerReceive(OrderInfo orderInfo, String buyer)
+    {
+        if(!orderInfo.getBuyer().equals(buyer))
+            return OrderInfo.ERROR;
+        try
+        {
+            Order order = orderRepository.findByOid(orderInfo.getOid());
+            order.setOrderStatus(OrderStatus.COMPLETED);
+            orderRepository.save(order);
+            return OrderInfo.SUCCEED;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return OrderInfo.ERROR;
+        }
     }
+
 
     private OrderInfo[] getOrderInfoArr(List<Order> orders)
     {
         OrderInfo[] orderInfoArr = new OrderInfo[orders.size()];
         for(int i = 0; i < orderInfoArr.length; i++)
         {
-            orderInfoArr[i] = new OrderInfo();
-            BeanUtils.copyProperties(orders.get(i), orderInfoArr[i]);
+            orderInfoArr[i] = getOrderInfoFromOrder(orders.get(i));
         }
         return orderInfoArr;
     }
@@ -171,9 +215,44 @@ public class OrderServiceImpl implements OrderService
         }
     }
 
-    @Override
-    public OrderInfo getOrderByOid(Integer oid)
+    private OrderInfo getOrderInfoFromOrder(Order order)
     {
-        return null;
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(order, orderInfo);
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setTitle(order.getGoods().getTitle());
+        goodsInfo.setGid(order.getGoods().getGid());
+        orderInfo.setGoods(goodsInfo);
+        return orderInfo;
+    }
+
+    private OrderInfo getOrderInfoFromOrderInDetail(Order order)
+    {
+        OrderInfo orderInfo = getOrderInfoFromOrder(order);
+        orderInfo.setBuyer(order.getBuyer().getUsername());
+        orderInfo.setOwner(order.getGoods().getOwner().getUsername());
+        return orderInfo;
+    }
+
+    @Override
+    public OrderInfo getOrderByOid(Integer oid, String username)
+    {
+        try
+        {
+            /*验证访问权限*/
+            User user = userRepository.findUserByUsername(username);
+            if(user == null)
+                return null;
+            Order order = orderRepository.findByOid(oid);
+            if(order.getBuyer().getUid() != user.getUid() && order.getGoods().getOwner().getUid() != user.getUid())
+                return null;
+
+            return getOrderInfoFromOrderInDetail(order);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

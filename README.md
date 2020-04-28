@@ -4,6 +4,8 @@ A SpringBoot Develop Experiment
 ## Features
 * Login
 * Register
+* Publish Goods
+* Purchase Goods and Create Order
 
 ## Tools, Dependencies and Frameworks
 * SpringBoot
