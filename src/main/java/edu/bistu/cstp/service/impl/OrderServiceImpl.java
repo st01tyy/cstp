@@ -8,6 +8,7 @@ import edu.bistu.cstp.dao.repository.GoodsRepository;
 import edu.bistu.cstp.dao.repository.OrderRepository;
 import edu.bistu.cstp.dao.repository.UserRepository;
 import edu.bistu.cstp.domain.goods.GoodsInfo;
+import edu.bistu.cstp.domain.order.OrderComment;
 import edu.bistu.cstp.domain.order.OrderCreateRequest;
 import edu.bistu.cstp.domain.order.OrderInfo;
 import edu.bistu.cstp.service.OrderService;
@@ -254,5 +255,22 @@ public class OrderServiceImpl implements OrderService
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public OrderComment getCommentByOid(Integer oid)
+    {
+        Order order = orderRepository.findByOid(oid);
+        OrderComment orderComment = new OrderComment(oid, order.getBuyerComment(), order.getOwnerComment());
+        return orderComment;
+    }
+
+    @Override
+    public void updateComment(OrderComment orderComment)
+    {
+        Order order = orderRepository.findByOid(orderComment.getOid());
+        order.setBuyerComment(orderComment.getBuyerComment());
+        order.setOwnerComment(orderComment.getOwnerComment());
+        orderRepository.save(order);
     }
 }

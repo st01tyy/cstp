@@ -40,4 +40,10 @@ public class Order
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private User buyer;
+
+    @Column
+    private String buyerComment;    //买家评论
+
+    @Column
+    private String ownerComment;    //卖家评论
 }

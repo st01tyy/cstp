@@ -1,6 +1,7 @@
 package edu.bistu.cstp.controller;
 
 import edu.bistu.cstp.domain.goods.GoodsInfo;
+import edu.bistu.cstp.domain.order.OrderComment;
 import edu.bistu.cstp.domain.order.OrderCreateRequest;
 import edu.bistu.cstp.domain.order.OrderInfo;
 import edu.bistu.cstp.service.GoodsService;
@@ -109,5 +110,17 @@ public class OrderController
             return OrderInfo.ERROR;
 
         return orderService.buyerReceive(orderInfo, buyer);
+    }
+
+    @GetMapping("/data/get_comment")
+    public OrderComment getComment(@RequestParam Integer oid)
+    {
+        return orderService.getCommentByOid(oid);
+    }
+
+    @PostMapping("/data/update_comment")
+    public void updateComment(@RequestBody OrderComment orderComment)
+    {
+        orderService.updateComment(orderComment);
     }
 }

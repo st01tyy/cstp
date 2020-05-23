@@ -1,5 +1,6 @@
 package edu.bistu.cstp.service;
 
+import edu.bistu.cstp.domain.order.OrderComment;
 import edu.bistu.cstp.domain.order.OrderCreateRequest;
 import edu.bistu.cstp.domain.order.OrderInfo;
 
@@ -20,4 +21,8 @@ public interface OrderService
     OrderInfo[] getOrdersByGoods(Integer gid);
 
     OrderInfo getOrderByOid(Integer oid, String username);
+
+    OrderComment getCommentByOid(Integer oid);
+
+    void updateComment(OrderComment orderComment);
 }
